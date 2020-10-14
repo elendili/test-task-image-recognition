@@ -10,6 +10,7 @@ import java.util.function.*;
 import java.util.stream.Collectors;
 
 import static java.lang.Math.*;
+import static java.util.Objects.requireNonNull;
 
 public class Card {
     final static Function<BufferedImage, Integer> sCGetter = img -> img.getRGB(2 * img.getWidth() / 3, 4 * img.getHeight() / 5);
@@ -65,7 +66,8 @@ public class Card {
 
     protected static String cardValues(String f) {
         try {
-            return cutCards(ImageIO.read(Paths.get(f).toFile())).stream().map(img -> rank(img) + suit(img)).collect(Collectors.joining());
+            return cutCards(requireNonNull(ImageIO.read(Paths.get(f).toFile()),"not an image: "+f))
+                    .stream().map(img -> rank(img) + suit(img)).collect(Collectors.joining());
         } catch (IOException e) {
             throw new UncheckedIOException("Error on reading '"+f+"'",e);
         }
@@ -110,7 +112,7 @@ public class Card {
 
     public static void main(String[] args) {
         assert args.length>0:"provide path to dir";
-        Arrays.stream(Objects.requireNonNull(Paths.get(args[0]).toFile().listFiles(), "provide path to dir")).forEach(f ->
+        Arrays.stream(requireNonNull(Paths.get(args[0]).toFile().listFiles(), "provide path to dir")).forEach(f ->
                 System.out.println(f + " " + cardValues(f.getAbsolutePath())));
     }
 }
