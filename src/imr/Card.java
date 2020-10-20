@@ -91,6 +91,7 @@ public class Card {
         return img.getSubimage(leftX, topY, rightX - leftX, bottomY - topY);
     }
 
+    // cut card images from desktop
     protected static List<BufferedImage> cutCards(BufferedImage img) {
         List<BufferedImage> list = new ArrayList<>(5);
         int top = 122 * img.getHeight() / 240, height = 137 * img.getHeight() / 240 - top;
@@ -99,12 +100,19 @@ public class Card {
         for (int x = left, newWidth = 0, leftShift = -1; x <= right; x += wcard + wgap, newWidth = 0, leftShift = -1)
             for (int i = 0; i < wcard; i++) {
                 int c = img.getRGB(x + i, yWhite);
+                // check if current pixel is white or gray
                 if (c == -1 || (((c >> 16) & 0xFF) == 120 && ((c >> 8) & 0xFF) == 120 && (c & 0xFF) == 120)) {
                     leftShift = leftShift < 0 ? i : leftShift;
                     newWidth = i - leftShift;
                 }
+                // add image
                 if (i == wcard - 1 && leftShift > -1) {
-                    list.add(img.getSubimage(x + leftShift, top, newWidth, height));
+                    // check center color
+                    BufferedImage z = img.getSubimage(x + leftShift, top, newWidth, height);
+                    c = z.getRGB(z.getWidth()/2,z.getHeight()/2);
+                    if (c == -1 || (((c >> 16) & 0xFF) == 120 && ((c >> 8) & 0xFF) == 120 && (c & 0xFF) == 120)) {
+                        list.add(z);
+                    }
                 }
             }
         return list;

@@ -155,13 +155,14 @@ class CardTest {
         );
     }
 
-    public static void cross(BufferedImage img, int x, int y) {
+    public static BufferedImage cross(BufferedImage img, int x, int y) {
         for (int i = img.getHeight() - 1; i > -1; i--) {
             img.setRGB(x, i, Color.RED.getRGB());
         }
         for (int i = img.getWidth() - 1; i > -1; i--) {
             img.setRGB(i, y, Color.RED.getRGB());
         }
+        return img;
     }
 
     public static void save(List<BufferedImage> imgs, String pref) {
@@ -185,4 +186,5 @@ class CardTest {
             throw new UncheckedIOException(e);
         }
     }
+
 }
